@@ -16,7 +16,7 @@ env:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +28,9 @@ jobs:
           - "1.6"
           - "1"
           - "nightly"
+        include:
+          - os: ubuntu-latest
+            julia-prefix: xvfb-run
         exclude:
           - os: macos-latest
             julia-version: "1.6"
@@ -42,7 +45,10 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
         with:
           ignore-no-cache: true
+          localregistry: https://github.com/0h7z/0hjl.git
       - uses: julia-actions/julia-runtest@v1
+        with:
+          prefix: ${{ matrix.julia-prefix }}
       - uses: heptazhou/julia-codecov@v1
       - uses: codecov/codecov-action@v3.1.5
         with:

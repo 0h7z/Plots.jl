@@ -190,7 +190,7 @@ else
 end
 push!(blacklist, 50)  # NOTE:  remove when github.com/jheinen/GR.jl/issues/507 is resolved
 
-@testset "GR - reference images" begin
+is_pkgeval() && @testset "GR - reference images" begin
     Plots.with(:gr) do
         # NOTE: use `ENV["VISUAL_REGRESSION_TESTS_AUTO"] = true;` to automatically replace reference images
         @test backend() == Plots.GRBackend()

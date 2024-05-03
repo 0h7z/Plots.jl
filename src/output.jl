@@ -153,6 +153,10 @@ function savefig(plt::Plot, fn) # fn might be an `AbstractString` or an `Abstrac
 end
 savefig(fn) = savefig(current(), fn)
 
+function Base.write(filename::AbstractString, p::AbstractPlot)
+	filesize(savefig(p, filename))
+end
+
 # ---------------------------------------------------------
 
 """
