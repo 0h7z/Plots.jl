@@ -7,7 +7,6 @@ import ImageMagick
 import FreeType  # for `unicodeplots`
 import LibGit2
 import Aqua
-import JSON
 
 using VisualRegressionTests
 using RecipesPipeline
