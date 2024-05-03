@@ -7,7 +7,6 @@ import ImageMagick
 import FreeType  # for `unicodeplots`
 import LibGit2
 import Aqua
-import JSON
 
 using VisualRegressionTests
 using RecipesPipeline
@@ -31,6 +30,9 @@ pgfplotsx()
 plotlyjs()
 hdf5()
 gr()
+
+# https://github.com/JuliaPlots/PlotReferenceImages.jl
+# ENV["VISUAL_REGRESSION_TESTS_AUTO"] = true
 
 is_auto() = Plots.bool_env("VISUAL_REGRESSION_TESTS_AUTO", "false")
 is_pkgeval() = Plots.bool_env("JULIA_PKGEVAL", "false")

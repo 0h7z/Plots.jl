@@ -27,7 +27,7 @@ end
 
 plotly_font(font::Font, color = font.color) = KW(
     :family => font.family,
-    :size   => round(Int, 1.4font.pointsize),
+    :size   => round(Int, 1.5font.pointsize),
     :color  => rgba_string(color),
 )
 
@@ -191,13 +191,16 @@ function plotly_polaraxis(sp::Subplot, axis::Axis)
     ax
 end
 
-function plotly_layout(plt::Plot)
+function plotly_layout(plt::Plot; responsive::Bool = true, _...)
     plotattributes_out = KW()
 
     w, h = plt[:size]
-    plotattributes_out[:width], plotattributes_out[:height] = w, h
+    if !responsive
+        plotattributes_out[:width], plotattributes_out[:height] = w, h
+    end
     plotattributes_out[:paper_bgcolor] = rgba_string(plt[:background_color_outside])
     plotattributes_out[:margin] = KW(:l => 0, :b => 20, :r => 0, :t => 20)
+    plotattributes_out[:hoverlabel] = KW(:namelength => -1)
 
     plotattributes_out[:annotations] = KW[]
 
@@ -1050,79 +1053,7 @@ plotly_series_json(plt::Plot) = JSON.json(plotly_series(plt), 4)
 
 # ----------------------------------------------------------------
 
-html_head(plt::Plot{PlotlyBackend}) = plotly_html_head(plt)
-html_body(plt::Plot{PlotlyBackend}) = plotly_html_body(plt)
-
-plotly_url() =
-    if _use_local_dependencies[]
-        _plotly_data_url()
-    else
-        "https://cdn.plot.ly/$_plotly_min_js_filename"
-    end
-
-function plotly_html_head(plt::Plot)
-    plotly = plotly_url()
-
-    include_mathjax = get(plt[:extra_plot_kwargs], :include_mathjax, "")
-
-    mathjax_file = if include_mathjax != "cdn"
-        "file://" * include_mathjax
-    else
-        "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"
-    end
-
-    mathjax_head = if isempty(include_mathjax)
-        ""
-    else
-        "<script src=\"$mathjax_file\"></script>\n\t\t"
-    end
-
-    if isijulia()
-        mathjax_head
-    else
-        "$mathjax_head<script src=$(repr(plotly))></script>"
-    end
-end
-
-function plotly_html_body(plt, style = nothing)
-    if style === nothing
-        w, h = plt[:size]
-        style = "width:$(w)px;height:$(h)px;"
-    end
-
-    requirejs_prefix = requirejs_suffix = ""
-    if isijulia()
-        # require.js adds .js automatically
-        plotly_no_ext = plotly_url() |> splitext |> first
-
-        requirejs_prefix = """
-            requirejs.config({
-                paths: {
-                    plotly: '$(plotly_no_ext)'
-                }
-            });
-            require(['plotly'], function (Plotly) {
-        """
-        requirejs_suffix = "});"
-    end
-
-    uuid = UUIDs.uuid4()
-    html = """
-        <div id=\"$(uuid)\" style=\"$(style)\"></div>
-        <script>
-        $(requirejs_prefix)
-        $(js_body(plt, uuid))
-        $(requirejs_suffix)
-        </script>
-    """
-    html
-end
-
-js_body(plt::Plot, uuid) =
-    "Plotly.newPlot('$(uuid)', $(plotly_series_json(plt)), $(plotly_layout_json(plt)));"
-
-plotly_show_js(io::IO, plot::Plot) =
-    JSON.print(io, Dict(:data => plotly_series(plot), :layout => plotly_layout(plot)))
+include("plotly_html.jl")
 
 # ----------------------------------------------------------------
 
@@ -1131,6 +1062,6 @@ Base.showable(::MIME"application/prs.juno.plotpane+html", plt::Plot{PlotlyBacken
 _show(io::IO, ::MIME"application/vnd.plotly.v1+json", plot::Plot{PlotlyBackend}) =
     plotly_show_js(io, plot)
 
-_show(io::IO, ::MIME"text/html", plt::Plot{PlotlyBackend}) = write(io, embeddable_html(plt))
+_show(io::IO, ::MIME"text/html", plt::Plot{PlotlyBackend}) = write(io, standalone_html(plt))
 
 _display(plt::Plot{PlotlyBackend}) = standalone_html_window(plt)
