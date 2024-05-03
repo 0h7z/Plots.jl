@@ -7,9 +7,11 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@max_m
     @eval Base.Experimental.@max_methods 1
 end
 
+using OrderedCollections: OrderedDict
 using Pkg, Dates, Printf, Statistics, Base64, LinearAlgebra, SparseArrays, Random
 using PrecompileTools, Reexport, RelocatableFolders
 using Base.Meta
+@reexport using LaTeXStrings
 @reexport using RecipesBase
 @reexport using PlotThemes
 @reexport using PlotUtils
@@ -42,7 +44,7 @@ import Downloads
 import Showoff
 import Unzip
 import JLFzf
-import JSON
+import JSON5 as JSON
 
 #! format: off
 export
@@ -54,6 +56,7 @@ export
     wrap,
     theme,
 
+    Plot,
     plot,
     plot!,
     attr!,
@@ -82,6 +85,8 @@ export
     inline,
     closeall,
 
+    GRBackend,
+    PlotlyBackend,
     backend,
     backends,
     backend_name,

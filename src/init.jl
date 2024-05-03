@@ -22,7 +22,7 @@ _plotly_data_url() =
 """
 use fixed version of Plotly instead of the latest one for stable dependency
 """
-const _plotly_min_js_filename = "plotly-2.6.3.min.js"
+const _plotly_min_js_filename = "plotly-2.32.0.min.js"
 
 """
 Whether to use local embedded or local dependencies instead of CDN.

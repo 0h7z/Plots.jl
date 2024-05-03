@@ -1,11 +1,5 @@
 # miscellaneous tests (not fitting into other test files)
 
-@testset "Infrastructure" begin
-    @test_nowarn JSON.Parser.parse(
-        String(read(joinpath(dirname(pathof(Plots)), "..", ".zenodo.json"))),
-    )
-end
-
 @testset "Plotly standalone" begin
     @test Plots._plotly_local_file_path[] ≡ nothing
     temp = Plots._use_local_dependencies[]

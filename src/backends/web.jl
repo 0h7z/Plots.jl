@@ -3,24 +3,7 @@
 
 # CREDIT: parts of this implementation were inspired by @joshday's PlotlyLocal.jl
 
-standalone_html(
-    plt::AbstractPlot;
-    title::AbstractString = get(plt.attr, :window_title, "Plots.jl"),
-) = """
-    <!DOCTYPE html>
-    <html>
-        <head>
-            <title>$title</title>
-            <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-            $(html_head(plt))
-        </head>
-        <body>
-            $(html_body(plt))
-        </body>
-    </html>
-    """
-
-embeddable_html(plt::AbstractPlot) = html_head(plt) * html_body(plt)
+include("web_html.jl")
 
 function open_browser_window(filename::AbstractString)
     @static if Sys.isapple()
