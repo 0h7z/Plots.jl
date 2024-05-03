@@ -250,7 +250,7 @@ end
 
 gr_inqtext(x, y, s) = gr_inqtext(x, y, string(s))
 gr_inqtext(x, y, s::AbstractString) =
-    if (occursin('\\', s) || occursin("10^{", s)) &&
+    if (occursin('\\', s) || occursin(r"(?:2|e|10)\^\{", s)) &&
        match(r".*\$[^\$]+?\$.*", String(s)) === nothing
         GR.inqtextext(x, y, s)
     else
@@ -259,7 +259,7 @@ gr_inqtext(x, y, s::AbstractString) =
 
 gr_text(x, y, s) = gr_text(x, y, string(s))
 gr_text(x, y, s::AbstractString) =
-    if (occursin('\\', s) || occursin("10^{", s)) &&
+    if (occursin('\\', s) || occursin(r"(?:2|e|10)\^\{", s)) &&
        match(r".*\$[^\$]+?\$.*", String(s)) === nothing
         GR.textext(x, y, s)
     else
@@ -2086,7 +2086,16 @@ for (mime, fmt) in (
             gr_display(plt, dpi_factor)
         end
         GR.emergencyclosegks()
-        write(io, read(filepath, String))
+        let str = read(filepath, String)
+            if $fmt == "svg"
+                rex = r"^\t*\K {2}"m
+                while contains(str, rex)
+                    str = replace(str, rex => "\t")
+                end
+                str = replace(str, r"[^\n]\K(</svg>)\s*$"s => s"\n\1\n")
+            end
+            write(io, str)
+        end
         rm(filepath)
     end
 end

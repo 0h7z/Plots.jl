@@ -19,10 +19,12 @@ _plotly_data_url() =
         _plotly_data_url_cached[]
     end
 
+const _plotly_js_version = v"2.35.3"
+
 """
 use fixed version of Plotly instead of the latest one for stable dependency
 """
-const _plotly_min_js_filename = "plotly-2.6.3.min.js"
+const _plotly_min_js_filename = "plotly-v$_plotly_js_version.min.js"
 
 """
 Whether to use local embedded or local dependencies instead of CDN.
@@ -51,7 +53,7 @@ function _plots_plotly_defaults()
         _plotly_local_file_path[] =
             fn = joinpath(@get_scratch!("plotly"), _plotly_min_js_filename)
         isfile(fn) ||
-            Downloads.download("https://cdn.plot.ly/$(_plotly_min_js_filename)", fn)
+            Downloads.download("https://cdnjs.cloudflare.com/ajax/libs/plotly.js/$_plotly_js_version/plotly.min.js", fn)
         _use_local_plotlyjs[] = true
     end
     _use_local_dependencies[] = _use_local_plotlyjs[]
@@ -125,7 +127,7 @@ include(_path(backend_name()))
                 $func() = begin  # evaluate each example in a local scope
                     $(_examples[i].exprs)
                     $i == 1 || return  # only for one example
-                    fn = joinpath(scratch_dir, tempname())
+                    fn = tempname(scratch_dir)
                     pl = current()
                     show(devnull, pl)
                     showable(MIME"image/png"(), pl) && savefig(pl, "$fn.png")

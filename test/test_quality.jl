@@ -11,6 +11,7 @@
                 :Contour,
                 :Latexify,
                 :LaTeXStrings,
+                :Pkg,
                 :Requires,
                 :UnitfulLatexify,
             ]

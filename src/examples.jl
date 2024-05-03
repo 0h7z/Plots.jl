@@ -1359,7 +1359,7 @@ function test_examples(
 )
     @info "Testing plot: $pkgname:$i:$(_examples[i].header)"
 
-    m = Module(Symbol(:PlotsExamples, pkgname))
+    m = Module(Symbol(:PlotsExamples_, pkgname))
 
     # prevent leaking variables (esp. functions) directly into Plots namespace
     Base.eval(m, quote
@@ -1402,6 +1402,7 @@ function test_examples(
         i ∈ something(only, (i,)) || continue
         i ∈ skip && continue
         try
+            pkgname === :pythonplot && GC.enable(false)
             plts[i] = test_examples(pkgname, i; debug, disp, callback)
         catch ex
             # COV_EXCL_START
@@ -1411,6 +1412,8 @@ function test_examples(
                 @warn "Example $pkgname:$i:$(_examples[i].header) failed with: $ex"
             end
             # COV_EXCL_STOP
+        finally
+            pkgname === :pythonplot && GC.enable(true)
         end
         sleep === nothing || Base.sleep(sleep)
     end
