@@ -190,7 +190,7 @@ else
 end
 push!(blacklist, 50)  # NOTE:  remove when github.com/jheinen/GR.jl/issues/507 is resolved
 
-@testset "GR - reference images" begin
+is_pkgeval() && @testset "GR - reference images" begin
     Plots.with(:gr) do
         # NOTE: use `ENV["VISUAL_REGRESSION_TESTS_AUTO"] = true;` to automatically replace reference images
         @test backend() == Plots.GRBackend()
@@ -203,7 +203,7 @@ push!(blacklist, 50)  # NOTE:  remove when github.com/jheinen/GR.jl/issues/507 i
     end
 end
 
-is_pkgeval() || @testset "PlotlyJS" begin
+is_pkgeval() && @testset "PlotlyJS" begin
     Plots.with(:plotlyjs) do
         @test backend() == Plots.PlotlyJSBackend()
         pl = plot(rand(10))
@@ -212,7 +212,7 @@ is_pkgeval() || @testset "PlotlyJS" begin
     end
 end
 
-is_pkgeval() || @testset "Examples" begin
+is_pkgeval() && @testset "Examples" begin
     callback(m, pkgname, i) = begin
         pl = m.Plots.current()
         save_func = (; pgfplotsx = m.Plots.pdf, unicodeplots = m.Plots.txt)  # fastest `savefig` for each backend

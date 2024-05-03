@@ -7,6 +7,7 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@max_m
     @eval Base.Experimental.@max_methods 1
 end
 
+using OrderedCollections: OrderedDict
 using Pkg, Dates, Printf, Statistics, Base64, LinearAlgebra, SparseArrays, Random
 using PrecompileTools, Reexport, RelocatableFolders
 using Base.Meta
@@ -42,7 +43,7 @@ import Downloads
 import Showoff
 import Unzip
 import JLFzf
-import JSON
+import JSON5 as JSON
 
 #! format: off
 export
@@ -54,6 +55,7 @@ export
     wrap,
     theme,
 
+    Plot,
     plot,
     plot!,
     attr!,
