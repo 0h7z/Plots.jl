@@ -203,7 +203,7 @@ is_pkgeval() && @testset "GR - reference images" begin
     end
 end
 
-is_pkgeval() || @testset "PlotlyJS" begin
+is_pkgeval() && @testset "PlotlyJS" begin
     Plots.with(:plotlyjs) do
         @test backend() == Plots.PlotlyJSBackend()
         pl = plot(rand(10))
@@ -212,7 +212,7 @@ is_pkgeval() || @testset "PlotlyJS" begin
     end
 end
 
-is_pkgeval() || @testset "Examples" begin
+is_pkgeval() && @testset "Examples" begin
     callback(m, pkgname, i) = begin
         pl = m.Plots.current()
         save_func = (; pgfplotsx = m.Plots.pdf, unicodeplots = m.Plots.txt)  # fastest `savefig` for each backend
