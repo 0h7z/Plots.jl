@@ -7,6 +7,7 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@max_m
     @eval Base.Experimental.@max_methods 1
 end
 
+using LaTeXStrings: LaTeXStrings
 using OrderedCollections: OrderedDict
 using Pkg, Dates, Printf, Statistics, Base64, LinearAlgebra, SparseArrays, Random
 using PrecompileTools, Reexport, RelocatableFolders

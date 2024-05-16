@@ -1075,12 +1075,7 @@ function plotly_html_head(plt::Plot)
 	plotly_js = "https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"
 
 	script(src::String) = """\t<script src="$src"></script>\n"""
-	if isijulia()
-		script(mathjax)
-	else
-		script(mathjax) *
-		script(plotly_js)
-	end
+	script(mathjax) * script(plotly_js)
 end
 
 function plotly_html_body(plt, style = nothing)
