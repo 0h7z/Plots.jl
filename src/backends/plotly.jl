@@ -191,7 +191,7 @@ function plotly_polaraxis(sp::Subplot, axis::Axis)
     ax
 end
 
-function plotly_layout(plt::Plot, responsive::Bool = true)
+function plotly_layout(plt::Plot; responsive::Bool = true, _...)
     plotattributes_out = KW()
 
     w, h = plt[:size]
@@ -337,11 +337,6 @@ function plotly_layout(plt::Plot, responsive::Bool = true)
     end
 
     plotattributes_out = recursive_merge(plotattributes_out, plt.attr[:extra_plot_kwargs])
-end
-
-# https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js
-function plotly_config(plt::Plot, responsive::Bool = true)
-    KW([:responsive => responsive, :showTips => false])
 end
 
 function plotly_add_legend!(plotattributes_out::KW, sp::Subplot)
@@ -1058,8 +1053,8 @@ plotly_series_json(plt::Plot) = JSON.json(plotly_series(plt), 4)
 
 # ----------------------------------------------------------------
 
-html_head(plt::Plot{PlotlyBackend}) = plotly_html_head(plt)
-html_body(plt::Plot{PlotlyBackend}) = plotly_html_body(plt)
+html_head(plt::Plot{PlotlyBackend}; kw...) = plotly_html_head(plt; kw...)
+html_body(plt::Plot{PlotlyBackend}; kw...) = plotly_html_body(plt; kw...)
 
 plotly_url() =
     if _use_local_dependencies[]
@@ -1068,43 +1063,7 @@ plotly_url() =
         "https://cdn.plot.ly/$_plotly_min_js_filename"
     end
 
-function plotly_html_head(plt::Plot)
-	# https://cdnjs.com/libraries/mathjax
-	# https://cdnjs.com/libraries/plotly.js
-	mathjax   = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg-full.min.js"
-	plotly_js = "https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"
-
-	script(src::String) = """\t<script src="$src"></script>\n"""
-	script(mathjax) * script(plotly_js)
-end
-
-function plotly_html_body(plt, style = nothing)
-	id = uuid4()
-	"""
-		<div id="$id"></div>
-		<!-- beautify ignore:start -->
-		<script>
-		/*   beautify ignore:start  */
-	$(js_body(plt, id) |> strip)
-		/*   beautify ignore:end    */
-		</script>
-		<!-- beautify ignore:end   -->
-	"""
-end
-
-function js_body(plt::Plot, id)
-	f = sort! ∘ OrderedDict
-	s = JSON.json(["$id",
-			plotly_series(plt) .|> f,
-			plotly_layout(plt) |> f,
-			plotly_config(plt) |> f,
-		], 4)
-	"""
-	Plotly.newPlot(
-		$(strip(∈("[\t\n]"), s))
-	)
-	"""
-end
+include("plotly_html.jl")
 
 plotly_show_js(io::IO, plot::Plot) =
     JSON.print(io, Dict(:data => plotly_series(plot), :layout => plotly_layout(plot)))

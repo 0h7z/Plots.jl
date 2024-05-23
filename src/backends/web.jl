@@ -3,31 +3,7 @@
 
 # CREDIT: parts of this implementation were inspired by @joshday's PlotlyLocal.jl
 
-standalone_html(plt::AbstractPlot;
-	title::AbstractString = get(plt.attr, :window_title, "Plots.jl")) =
-	"""
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="color-scheme" content="dark light" />
-		<meta name="referrer" content="no-referrer" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>$title</title>
-		<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/" />
-		<style>
-			html, body { display: flex; height: 100%; overflow: hidden; }
-			html, body, body > div { flex: auto; margin: 0; padding: 0; }
-		</style>
-		$(html_head(plt) |> strip)
-	</head>
-	<body>
-		$(html_body(plt) |> strip)
-	</body>
-	</html>
-	"""
-
-embeddable_html(plt::AbstractPlot) = html_head(plt) * html_body(plt)
+include("web_html.jl")
 
 function open_browser_window(filename::AbstractString)
     @static if Sys.isapple()
