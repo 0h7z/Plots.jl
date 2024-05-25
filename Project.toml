@@ -1,7 +1,7 @@
 name = "Plots"
 uuid = "90851b43-1319-4523-8ba0-be51ac244080"
 authors = ["Heptazhou <zhou at 0h7z dot com>"]
-version = "1.40.3"
+version = "1.40.4"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"

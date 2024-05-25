@@ -2062,7 +2062,11 @@ for (mime, fmt) in (
             gr_display(plt, dpi_factor)
         end
         GR.emergencyclosegks()
-        write(io, read(filepath, String))
+        s = read(filepath, String)
+        $fmt == "svg" && while contains(s, r"^\t* {2}"m)
+            s = replace(s, r"^\t*\K {2}"m => "\t")
+        end
+        write(io, s)
         rm(filepath)
     end
 end
