@@ -375,10 +375,11 @@ function get_minor_ticks(sp, axis, ticks_and_labels)
     amin, amax = axis_limits(sp, axis[:letter])
     scale = axis[:scale]
     base = get(_logScaleBases, scale, nothing)
+    log_ratio = isnothing(base) ? NaN : log(base, ticks[end] / ticks[end-1])
 
     # add one phantom tick either side of the ticks to ensure minor ticks extend to the axis limits
-    if (log_scaled = scale ∈ _logScales)
-        sub = round(Int, log(base, ticks[2] / ticks[1]))
+    if (log_scaled = scale ∈ _logScales && isfinite(log_ratio))
+        sub = round(Int, log_ratio)
         ticks = [ticks[1] / base; ticks; ticks[end] * base]
     else
         sub = 1  # unused
@@ -552,6 +553,8 @@ _scale_lims(::Val{false}, f::Function, invf::Function, from, to, factor) =
 
 function scale_lims(from, to, factor, scale)
     f, invf, noop = scale_inverse_scale_func(scale)
+    !noop && from ≤ 0 && (from = 1)
+    !noop && to ≤ 0 && (to = 1)
     _scale_lims(Val(noop), f, invf, from, to, factor)
 end
 
