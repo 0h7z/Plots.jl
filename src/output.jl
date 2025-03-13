@@ -153,9 +153,11 @@ function savefig(plt::Plot, fn) # fn might be an `AbstractString` or an `Abstrac
 end
 savefig(fn) = savefig(current(), fn)
 
+# LCOV_EXCL_START
 function Base.write(filename::AbstractString, p::AbstractPlot)
-	filesize(savefig(p, filename))
+	filesize(savefig(p, filename)::AbstractString)
 end
+# LCOV_EXCL_STOP
 
 # ---------------------------------------------------------
 

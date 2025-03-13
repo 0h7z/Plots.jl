@@ -1,9 +1,8 @@
 # miscellaneous tests (not fitting into other test files)
 
 @testset "Infrastructure" begin
-    return
-    @test_nowarn JSON.Parser.parse(
-        String(read(joinpath(dirname(pathof(Plots)), "..", ".zenodo.json"))),
+    @test !ispath(
+        String((joinpath(dirname(pathof(Plots)), "..", ".zenodo.json"))),
     )
 end
 

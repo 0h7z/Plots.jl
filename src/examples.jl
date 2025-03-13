@@ -1402,8 +1402,14 @@ function test_examples(
         i ∈ something(only, (i,)) || continue
         i ∈ skip && continue
         try
-            pkgname === :pythonplot && GC.enable(false)
+            try
+            #! format: noindent
+            GC.enable(false)
             plts[i] = test_examples(pkgname, i; debug, disp, callback)
+            finally
+            #! format: noindent
+            GC.enable(true)
+            end
         catch ex
             # COV_EXCL_START
             if strict
@@ -1412,8 +1418,6 @@ function test_examples(
                 @warn "Example $pkgname:$i:$(_examples[i].header) failed with: $ex"
             end
             # COV_EXCL_STOP
-        finally
-            pkgname === :pythonplot && GC.enable(true)
         end
         sleep === nothing || Base.sleep(sleep)
     end

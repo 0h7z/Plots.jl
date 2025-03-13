@@ -7,7 +7,6 @@ import ImageMagick
 import FreeType  # for `unicodeplots`
 import LibGit2
 import Aqua
-import JSON5: json
 
 using VisualRegressionTests
 using RecipesPipeline
@@ -20,10 +19,20 @@ using FileIO
 using Plots
 using Dates
 using Test
-using Plots: OrderedDict as ODict
+using Plots: JSON.json, OrderedDict as ODict
 
 # NOTE: don't use `plotly` (test hang, not surprised), test only the backends used in the docs
 const TEST_BACKENDS = :gr, :unicodeplots, :pythonplot, :pgfplotsx, :plotlyjs, :gaston
+
+using Pkg: Pkg
+
+@static if isinteractive()
+    Pkg.update()
+end
+
+let sources = Pkg.TOML.parsefile(Base.active_project())["sources"]
+    Pkg.add(url = sources["StatsPlots"]["url"])
+end
 
 # initial load - required for `should_warn_on_unsupported`
 unicodeplots()
@@ -34,6 +43,7 @@ gr()
 
 # https://github.com/JuliaPlots/PlotReferenceImages.jl
 # ENV["VISUAL_REGRESSION_TESTS_AUTO"] = true
+# ENV["JULIA_PKGEVAL"] = true
 
 is_auto() = Plots.bool_env("VISUAL_REGRESSION_TESTS_AUTO", "false")
 is_pkgeval() = Plots.bool_env("JULIA_PKGEVAL", "false")

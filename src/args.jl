@@ -1511,7 +1511,7 @@ function preprocess_attributes!(plotattributes::AKW)
     if st in (:boxplot, :violin, :density) &&
        !haskey(
         Base.loaded_modules,
-        Base.PkgId(Base.UUID("f3b207a7-027a-5e70-b257-86293d7955fd"), "StatsPlots"),
+        Base.PkgId(Base.UUID("fd2da95d-e7f1-4f0f-8720-c30e02dbb69d"), "StatsPlots"),
     )
         @warn "seriestype $st has been moved to StatsPlots.  To use: \`Pkg.add(\"StatsPlots\"); using StatsPlots\`"
     end

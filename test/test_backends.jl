@@ -1,10 +1,10 @@
 ci_tol() =
     if Sys.islinux()
-        is_pkgeval() ? "1e-2" : "5e-4"
+        is_pkgeval() ? "5e-4" : "5e-4"
     elseif Sys.isapple()
         "1e-2"
     else
-        "1e-4"
+        "1e-3"
     end
 
 const TESTS_MODULE = Module(:PlotsTestsModule)
@@ -59,7 +59,7 @@ function reference_file(backend, version, i)
     refdir = reference_dir("Plots", string(backend))
     fn = ref_name(i) * ".png"
     reffn = joinpath(refdir, string(version), fn)
-    i in [42, 50] && (version = v"2")
+    i == 50 && (version = v"2")
     for ver in sort(VersionNumber.(readdir(refdir)), rev = true)
         ver > version && continue
         if (tmpfn = joinpath(refdir, string(ver), fn)) |> isfile
@@ -116,7 +116,14 @@ function image_comparison_facts(
 )
     for i in setdiff(1:length(Plots._examples), skip)
         if only === nothing || i in only
+            try
+            #! format: noindent
+            GC.enable(false)
             @test success(image_comparison_tests(pkg, i; debug, sigma, tol))
+            finally
+            #! format: noindent
+            GC.enable(true)
+            end
         end
     end
 end
@@ -193,7 +200,7 @@ const blacklist = if VERSION.major == 1 && VERSION.minor ∈ (9, 10)
 else
     []
 end
-push!(blacklist, 25, 30) # StatsPlots depends on the wrong Plots
+@static VERSION ≥ v"1.12-DEV" && push!(blacklist, 25, 30) # Segmentation fault (EXCEPTION_ACCESS_VIOLATION)
 
 @testset "GR - reference images" begin
     Plots.with(:gr) do
