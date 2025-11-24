@@ -79,3 +79,5 @@ for name in (
         include("test_$name.jl")
     end
 end
+is_ci() || Pkg.rm("StatsPlots")
+

@@ -25,11 +25,11 @@ jobs:
           - ubuntu-latest
           - macos-latest
         julia-version:
-          - "1.9"
+          # - "1.9" # https://github.com/jheinen/GR.jl/issues/566
           - "lts"
           - "1"
           - "pre"
-          - "1.12-nightly"
+          # - "nightly" # ParseError UndefVarError
         include:
           - os: ubuntu-latest
             julia-prefix: xvfb-run

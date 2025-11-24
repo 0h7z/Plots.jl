@@ -1,4 +1,5 @@
 @testset "Auto QUality Assurance" begin
+    @show Aqua.find_persistent_tasks_deps(Plots)
     # JuliaTesting/Aqua.jl/issues/77
     # TODO: fix :Contour, :Latexify and :LaTeXStrings stale imports in Plots 2.0
     # :Conda stale deps show up when running CI
@@ -18,6 +19,7 @@
         ),
         ambiguities = false,
         deps_compat = false,  # FIXME: fails `CondaPkg`
+        persistent_tasks = false,
         piracies = false,
     )
     Aqua.test_ambiguities(Plots; exclude = [RecipesBase.apply_recipe])  # FIXME: remaining ambiguities

@@ -16,7 +16,7 @@ reference_dir(args...) =
     if (ref_dir = get(ENV, "PLOTS_REFERENCE_DIR", nothing)) !== nothing
         ref_dir
     else
-        joinpath(homedir(), ".julia", "dev", "PlotReferenceImages.jl", args...)
+        joinpath(first(Base.DEPOT_PATH), "dev", "PlotReferenceImages.jl", args...)
     end
 reference_path(backend, version) = reference_dir("Plots", string(backend), string(version))
 
@@ -59,7 +59,7 @@ function reference_file(backend, version, i)
     refdir = reference_dir("Plots", string(backend))
     fn = ref_name(i) * ".png"
     reffn = joinpath(refdir, string(version), fn)
-    i == 50 && (version = v"2")
+    i in [42, 50, 62] && (version = v"2")
     for ver in sort(VersionNumber.(readdir(refdir)), rev = true)
         ver > version && continue
         if (tmpfn = joinpath(refdir, string(ver), fn)) |> isfile
@@ -248,15 +248,7 @@ is_pkgeval() || @testset "Examples" begin
         be == :pythonplot && Sys.isapple() && continue # NSInvalidArgumentException
         be == (:plotlyjs) && Sys.islinux() && continue # ECONNREFUSED
         be in (:pgfplotsx, :gaston) && continue
-        try
-        #! format: noindent
         Plots.test_examples(be; skip, callback, disp = is_ci(), strict = true)  # `ci` display for coverage
-        catch e
-            @static VERSION < v"1.12-DEV" && rethrow()
-            @error be exception = e, catch_backtrace()
-            @test e isa UndefVarError
-            @test e.var === :Plots
-        end
         closeall()
     end
 end

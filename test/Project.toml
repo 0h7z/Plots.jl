@@ -12,6 +12,7 @@ GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 LibGit2 = "76f85450-5226-5b5a-8eaa-529ad045b433"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
@@ -36,14 +37,15 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+UnitfulLatexify = "45397f5d-5981-4c77-b2b3-fc36d6e9b728"
 VisualRegressionTests = "34922c18-7c2a-561c-bac1-01e79b2c4c92"
 
 [sources]
 Plots = {path = ".."}
-StatsPlots = {url = "https://github.com/Heptazhou/StatsPlots.jl"}
+StatsPlots = {rev = "master", url = "https://github.com/Heptazhou/StatsPlots.jl"}
 
 [compat]
-Plots = "≥ 1.40.8"
+Plots = "≥ 1.40.10"
 
 [extras]
 StatsPlots = "fd2da95d-e7f1-4f0f-8720-c30e02dbb69d"

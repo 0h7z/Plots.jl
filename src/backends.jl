@@ -114,7 +114,7 @@ _series_updated(plt::Plot, series::Series) = nothing
 _before_layout_calcs(plt::Plot) = nothing
 
 title_padding(sp::Subplot) = sp[:title] == "" ? 0mm : sp[:titlefontsize] * pt
-guide_padding(axis::Axis) = axis[:guide] == "" ? 0mm : axis[:guidefontsize] * pt
+guide_padding(axis::Axis) = Plots.get_guide(axis) == "" ? 0mm : axis[:guidefontsize] * pt
 
 closeall(::AbstractBackend) = nothing
 
@@ -574,7 +574,7 @@ function _initialize_backend(pkg::PlotlyBackend)
         _runtime_init(pkg)
     catch err
         if err isa ArgumentError
-            @debug "Failed to load integration with PlotlyBase & PlotlyKaleido." exception =
+            @warn "Failed to load integration with PlotlyBase & PlotlyKaleido." exception =
                 (err, catch_backtrace())
         else
             rethrow(err)
@@ -848,6 +848,13 @@ const _pgfplots_scale = [:identity, :ln, :log2, :log10]
 
 # ------------------------------------------------------------------------------
 # plotlyjs
+_post_imports(::PlotlyJSBackend) = @eval begin
+    const PlotlyJS = Main.PlotlyJS
+    if Plots.bool_env("PLOTS_PLOTLYJS_UNSAFE_ELECTRON", "false")
+        (Sys.islinux() && isdefined(PlotlyJS, :unsafe_electron)) &&
+            PlotlyJS.unsafe_electron()
+    end
+end
 
 const _plotlyjs_attr       = _plotly_attr
 const _plotlyjs_seriestype = _plotly_seriestype
